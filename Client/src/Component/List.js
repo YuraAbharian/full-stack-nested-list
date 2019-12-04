@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect,useContext, useState } from "react"; 
 import AddField from "../Helper/AddField";
 import Buttons from "./Button"; 
-
+import {Request} from '../api/api';
+import{ ListContext } from '../Context/Context';
 const List = props => {
- 
+   
   const [list, setList] = useState({ 
     localData: [],
     listId: "",
@@ -13,14 +13,12 @@ const List = props => {
 
   useEffect(() => {
     if (props.listId) {
-      axios
-        .get(`http://localhost:3001/${props.listId}`)
-        .then(data => setList({ ...list, localData: data.data }))
-        
+      Request.getData(props.listId) 
+        .then(data => setList({ ...list, localData: data.data })) 
     }
   }, []);
-
-  const AddSublist = idToAddSublist => {
+  // const {  AddSublist,RemoveSublist,addList, removeList, Move,MoveUp,MoveDown   } = useContext()
+  const AddSublist =async (idToAddSublist) => {
     let newData = list.localData;
     let noteToAdd;
     newData.forEach(note => {
@@ -30,12 +28,7 @@ const List = props => {
     });
     noteToAdd.showSublist = true;
     setList({ ...list, localData: newData });
-
-    axios
-      .post("http://localhost:3001/addSublist", {
-        id: idToAddSublist
-      })
-      .then(res => { 
+    const res = await Request.addSubList(idToAddSublist) 
         let noteToChange;
         list.localData.forEach(note => {
           if (note._id === idToAddSublist) {
@@ -43,13 +36,10 @@ const List = props => {
           }
         });
         noteToChange.subListId = res.data;
-        setList({ ...list, localData: list.localData });
-      })
+        setList({ ...list, localData: list.localData }); 
        
   };
-
-  const RemoveSublist = idToRemoveSublist => {
-     
+  const RemoveSublist = idToRemoveSublist => { 
     let noteToChange;
     list.localData.forEach(note => {
       if (note._id === idToRemoveSublist) {
@@ -59,75 +49,40 @@ const List = props => {
     noteToChange.showSublist = false;
     noteToChange.subListId = "";
     setList({ ...list, localData: list.localData });
-
-    axios
-      .post("http://localhost:3001/removeSublist", {
-        id: idToRemoveSublist
-      }) 
-  };
-
-  const addList = (note, listId) => {  
+    Request.removeSublist(idToRemoveSublist) 
+  }; 
+  const addList =async (note, listId) => {  
     let currentPositions = list.localData.map(note => note.position);
     let posToBeAdded = 0;
     while (currentPositions.includes(posToBeAdded)) {
       ++posToBeAdded;
-    } 
-      axios.post("http://localhost:3001/add", {
-          message: note,
-          position: posToBeAdded,
-          showSublist: false,
-          listId: listId,
-          subListId: ""
-        })
-        .then(res => {
+    }  
+      const res = await Request.add(note, posToBeAdded,listId ) 
           setList(state => ({
-            ...list,
-            noteToAdd: "",
+            ...list, 
             localData: [...state.localData, res.data]
-          }));
-        })
-        
-    
-  };
-
+          })); 
+  }; 
   const removeList = (noteIdToDelete, notePositionToDelete) => {
     let notesObjToUpdate = list.localData.filter(
       note => note.position > notePositionToDelete
     );
     notesObjToUpdate.map(note => --note.position);
 
-    setList(state => ({
+    setList({
       ...list,
       localData: list.localData.filter(note => note._id !== noteIdToDelete)
-    }));
-
-    axios
-      .delete("http://localhost:3001/delete", {
-        data: {
-          id: noteIdToDelete
-        }
-      })
-       
-
-    axios
-      .post("http://localhost:3001/update", {
-        objToUpd: notesObjToUpdate
-      }) 
+    });
+    Request.remove(noteIdToDelete) 
+    Request.update(notesObjToUpdate) 
   };
-
   const Move = (array, from, to) => { 
     const def = array[from].position
     array[from].position = array[to].position
-    array[to].position = def;
-
-    axios.post("http://localhost:3001/update", {
-        objToUpd: array
-      })
-      .then(() => {
-        setList({ ...list, localData: array });
-      });
+    array[to].position = def; 
+    Request.update(array);
+    setList({ ...list, localData: array });      
   };
-
   const MoveUp = (array, from, to) => { 
     return Move(array, from, to);
   };
