@@ -4,7 +4,7 @@ import Buttons from "../Button";
 import ListContainer from "./ListContainer";
 const List = props => {
 
-const {  list,  addList  } = props;
+const {  list,  addList, listId , setList  } = props;
 
   return (
     <div>
@@ -33,7 +33,7 @@ const {  list,  addList  } = props;
         </ul>
       </div>
 
-      <AddField addList={addList} list={props.listId} />
+      <AddField addList={addList} list={list} setList={setList} listId={listId} />
     </div>
   );
 };

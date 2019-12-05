@@ -1,14 +1,22 @@
-import React  from 'react';
-import ListContainer from './Component/List/ListContainer';
-// import AppContextProvider from './Context/Context';
-
+import React, { useState, useEffect }  from 'react';
+import ListContainer from './Component/List/ListContainer'; 
+import {Request} from "./api/api";
 
 
 const  App=()=> {
-
-  return (
-      <ListContainer listId='56cb91bdc3464f14678934ca' />
+const [list, setListId] = useState({id: 0, show: false})
+      useEffect(()=>{
+        Request.getNewList()
+        .then(res=>setListId({id: res.data, show: true}))  
+      },[])
+  
+    return (     <div>
+      {list.show &&  <ListContainer setListId={setListId} listId={list.id} /> }
+    </div>
+     
   );
+  
+  
 };
 
 export default App;

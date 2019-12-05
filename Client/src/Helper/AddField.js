@@ -1,12 +1,11 @@
 import React  from 'react';
 
-const AddField = ({addList, list}) => {
+const AddField = ({addList,listId ,  setList, list}) => {
     const [value, setValue] = React.useState("");  
-    
     const handlerSubmit = e => {
         e.preventDefault();  
         if (!value) return; 
-        addList(value, list);
+        addList(value, listId,  setList, list);
         setValue("");
     };
 

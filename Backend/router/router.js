@@ -3,20 +3,23 @@ const List = require("../model/list.model.js");
 const Item = require("../model/item.model.js");
 const mongoose = require("mongoose");
 
+router.get("/me", async (req, res) =>{
+  const list = await List.find();
+  if(!list.length){ 
+   const ListID = await List.create({ 
+        "ancestors": [],
+        "parent": "",
+    });
+          res.json(ListID._id)
+    } else {
+          res.json(list[0]._id)
+    }
+
+});
+
 router.get("/:listId", async (req, res) => {
-  const { listId } = { ...req.params };
-
-    const list = await List.findById(listId);
-    try {
-          if(!list) {
-
-              await List.create({
-                  "_id": "56cb91bdc3464f14678934ca",
-                  "ancestors": [],
-                  "parent": "",
-              });
-          }
-
+  const { listId } = { ...req.params };    
+    try { 
         const item =await Item.find({ parent: listId });
         res.json(item);
     } catch (e) {

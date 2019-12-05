@@ -30,8 +30,11 @@ export const Request = {
         addSubList:(id)=>{
           return  instance.post("addSublist", { id })
         },
-        getData:(listId) => {
-
+        getData:(listId) => { 
           return  instance.get(`${listId}`)
-        }
+        },
+        getNewList:() => { 
+          return  instance.get(`me`)
+        },
+       
 };

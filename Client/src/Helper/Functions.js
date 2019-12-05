@@ -34,8 +34,9 @@ export const RemoveSublist =( removeSublistId, setList, list )=> {
     setList({ ...list, localData: list.localData });
     Request.removeSublist(removeSublistId)
 };
+
 // add list
-export const addList =async (note, listId,setList, list) => {
+export const addList =async (note, listId, setList, list) => { 
     const currentPositions = list.localData.map(note => note.position);
     let addedPos = 0;
     while (currentPositions.includes(addedPos)) {
