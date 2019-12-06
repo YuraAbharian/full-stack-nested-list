@@ -1,21 +1,25 @@
-import React from "react";
-import AddField from "../../Helper/AddField";
-import Buttons from "../Button";
-import ListContainer from "./ListContainer";
+import React from 'react';
+import AddField from '../../Helper/AddField';
+import Buttons from '../Button';
+import ListContainer from './ListContainer';
+import './ListStyle.css';
 const List = props => {
-
-const {  list,  addList, listId , setList  } = props;
+  const {
+    list,
+    addList,
+    listId,
+    moveDown,
+    moveUp,
+    removeList,
+    addSublist,
+    removeSublist,
+    setList,
+  } = props;
 
   return (
     <div>
-      <div style={{ display: "flex" }}>
-        <ul
-          style={{
-            listStyle: "none",
-            marginTop: "5px",
-            justifyContent: "flex-end"
-          }}
-        >
+      <div className='main'>
+        <ul>
           {list.localData &&
             list.localData
               .sort((a, b) => a.position - b.position)
@@ -23,11 +27,20 @@ const {  list,  addList, listId , setList  } = props;
                 <li key={item._id}>
                   <div>{item.message}</div>
                   <Buttons
-                    item={item}
-                    {...props}
+                    removeList={() => removeList(item._id, item.position, setList, list)}
+                    moveUp={() =>
+                      moveUp(list.localData, item.position, item.position - 1, setList, list)
+                    }
+                    moveDown={() =>
+                      moveDown(list.localData, item.position, item.position + 1, setList, list)
+                    }
+                    addSubList={() => addSublist(item._id, setList, list)}
+                    removeSublist={() => removeSublist(item._id, setList, list)}
+                    item={item.showSublist}
                     index={index}
+                    list={list.localData.length}
                   />
-                    {item.showSublist ? <ListContainer listId={item.subListId}/> : null}
+                  {item.showSublist ? <ListContainer listId={item.subListId} /> : null}
                 </li>
               ))}
         </ul>

@@ -24,9 +24,7 @@ router.get("/:listId", async (req, res) => {
         res.json(item);
     } catch (e) {
         console.log("error")
-
     } 
-
 });
 
 router.post("/add", async (req, res) => {
@@ -116,10 +114,4 @@ router.post("/removeSublist",async (req, res) => {
 
 module.exports = router;
 
-
-// {
-//     "_id" : ObjectId("5de619eb508ae823bbd3a657"),
-//     "ancestors" : [],
-//     "parent" : "",
-//     "__v" : 0
-// }
+ 

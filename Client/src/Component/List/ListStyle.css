@@ -1,0 +1,13 @@
+.main {
+  display: flex;
+}
+
+.main ul {
+  list-style: none;
+  margin-top: 5px;
+  justify-content: flex-end;
+}
+
+.main li {
+  margin-top: 5px;
+}
